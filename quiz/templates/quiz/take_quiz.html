@@ -1,42 +1,81 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>{{ quiz.title }}</h2>
-<p>{{ quiz.description }}</p>
+<div class="container my-3">
+  <h2>{{ quiz.title }}</h2>
+  <p>{{ quiz.description }}</p>
 
-<div class="alert alert-info">
-  Time Remaining: <span id="timer"></span>
-</div>
-
-<form method="post" id="quizForm" action="{% url 'quiz:submit_quiz' attempt.id %}">
-  {% csrf_token %}
-  {% for question in questions %}
-  <div class="card mb-3">
-    <div class="card-body">
-      <p><strong>Q{{ forloop.counter }}:</strong> {{ question.question_text }}</p>
-{% if question.image %}
-  <img src="{{ question.image.url }}" alt="Question Image" class="img-fluid mb-2">
-{% endif %}
-
-     <div class="form-check">
-  <input class="form-check-input" type="radio" name="q_{{ question.id }}" id="q{{ question.id }}a" value="1">
-  <label class="form-check-label" for="q{{ question.id }}a">
-    {{ question.option1 }}
-    {% if question.option1_image %}
-      <br>
-      <img src="{{ question.option1_image.url }}" alt="Option 1 Image" class="img-fluid mt-1">
-    {% endif %}
-  </label>
-</div>
-
-<!-- Repeat similarly for option2, option3, option4 -->
-
+  <div class="alert alert-info mb-3 text-center">
+    Time Remaining: <span id="timer"></span>
   </div>
-  {% endfor %}
-  <button type="submit" class="btn btn-success">Submit Quiz</button>
-</form>
 
-<!-- ====== Add this script here ====== -->
+  <form method="post" id="quizForm" action="{% url 'quiz:submit_quiz' attempt.id %}">
+    {% csrf_token %}
+    {% for question in questions %}
+    <div class="card mb-3">
+      <div class="card-body">
+        <p><strong>Q{{ forloop.counter }}:</strong> {{ question.question_text }}</p>
+
+        {% if question.image %}
+          <img src="{{ question.image.url }}" alt="Question Image" class="img-fluid mb-2">
+        {% endif %}
+
+        <!-- Option 1 -->
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q_{{ question.id }}" id="q{{ question.id }}a" value="1">
+          <label class="form-check-label" for="q{{ question.id }}a">
+            {{ question.option1 }}
+            {% if question.option1_image %}
+              <br>
+              <img src="{{ question.option1_image.url }}" alt="Option 1 Image" class="img-fluid mt-1">
+            {% endif %}
+          </label>
+        </div>
+
+        <!-- Option 2 -->
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q_{{ question.id }}" id="q{{ question.id }}b" value="2">
+          <label class="form-check-label" for="q{{ question.id }}b">
+            {{ question.option2 }}
+            {% if question.option2_image %}
+              <br>
+              <img src="{{ question.option2_image.url }}" alt="Option 2 Image" class="img-fluid mt-1">
+            {% endif %}
+          </label>
+        </div>
+
+        <!-- Option 3 -->
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q_{{ question.id }}" id="q{{ question.id }}c" value="3">
+          <label class="form-check-label" for="q{{ question.id }}c">
+            {{ question.option3 }}
+            {% if question.option3_image %}
+              <br>
+              <img src="{{ question.option3_image.url }}" alt="Option 3 Image" class="img-fluid mt-1">
+            {% endif %}
+          </label>
+        </div>
+
+        <!-- Option 4 -->
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q_{{ question.id }}" id="q{{ question.id }}d" value="4">
+          <label class="form-check-label" for="q{{ question.id }}d">
+            {{ question.option4 }}
+            {% if question.option4_image %}
+              <br>
+              <img src="{{ question.option4_image.url }}" alt="Option 4 Image" class="img-fluid mt-1">
+            {% endif %}
+          </label>
+        </div>
+
+      </div>
+    </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-success btn-block">Submit Quiz</button>
+  </form>
+</div>
+
 <script>
 // Countdown timer
 let timeLeft = {{ duration_seconds }};

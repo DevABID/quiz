@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Leaderboard: {{ quiz.title }}</h2>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Rank</th>
+      <th>Student</th>
+      <th>Score</th>
+      <th>Time Taken (s)</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for att in attempts %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ att.student.username }}</td>
+      <td>{{ att.total_score }}</td>
+      <td>{{ att.time_taken }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

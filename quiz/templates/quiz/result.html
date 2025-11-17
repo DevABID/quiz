@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Quiz Result: {{ attempt.quiz.title }}</h2>
+<p>Total Score: {{ attempt.total_score }} / {{ attempt.quiz.total_marks }}</p>
+<p>Time Taken: {{ attempt.time_taken }} seconds</p>
+
+<h3>Question-wise Results</h3>
+{% for ans in answers %}
+<div class="card mb-2">
+  <div class="card-body">
+    <p><strong>Q{{ forloop.counter }}:</strong> {{ ans.question.question_text }}</p>
+    <p>Your Answer:
+        {% if ans.selected_option %}
+            Option {{ ans.selected_option }}
+        {% else %}
+            Not answered
+        {% endif %}
+    </p>
+    <p>Correct Answer: Option {{ ans.question.correct_answer }}</p>
+    <p>Marks Obtained: {{ ans.marks_obtained }}</p>
+  </div>
+</div>
+{% endfor %}
+{% endblock %}

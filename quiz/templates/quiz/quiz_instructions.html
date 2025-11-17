@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>{{ quiz.title }}</h3>
+<p>{{ quiz.description }}</p>
+<p>Duration: {{ quiz.duration }} minutes</p>
+<form method="post" action="{% url 'quiz:start_quiz' quiz.id %}">{% csrf_token %}
+  <button class="btn btn-success">Start Quiz</button>
+</form>
+{% endblock %}

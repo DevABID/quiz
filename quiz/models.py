@@ -18,16 +18,16 @@ class Question(models.Model):
     image = models.ImageField(upload_to='question_images/', blank=True, null=True)  # new field
 
     question_text = models.TextField()
-    option1 = models.CharField(max_length=300)
+    option1 = models.CharField(max_length=300, blank=True, null=True)
     option1_image = models.ImageField(upload_to='option_images/', blank=True, null=True)  # Option 1 image
 
-    option2 = models.CharField(max_length=300)
+    option2 = models.CharField(max_length=300, blank=True, null=True)
     option2_image = models.ImageField(upload_to='option_images/', blank=True, null=True)  # Option 2 image
 
-    option3 = models.CharField(max_length=300)
+    option3 = models.CharField(max_length=300, blank=True, null=True)
     option3_image = models.ImageField(upload_to='option_images/', blank=True, null=True)  # Option 3 image
 
-    option4 = models.CharField(max_length=300)
+    option4 = models.CharField(max_length=300, blank=True, null=True)
     option4_image = models.ImageField(upload_to='option_images/', blank=True, null=True)  # Option 4 image
     CORRECT_CHOICES = [('1','1'),('2','2'),('3','3'),('4','4')]
     correct_answer = models.CharField(max_length=1, choices=CORRECT_CHOICES)

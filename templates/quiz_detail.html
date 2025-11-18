@@ -1,53 +1,80 @@
-{% extends 'base.html' %}
-{% load static %}
+
+
+
+
+
+
+
+
+
+{% extends "base.html" %}
 
 {% block content %}
-<h2>{{ quiz.title }}</h2>
-<p>{{ quiz.description }}</p>
-<p>Time: <span id="timer">{{ quiz.duration }}:00</span> minutes</p>
+<div class="container my-3">
+  <h2>{{ quiz.title }}</h2>
+  <p>{{ quiz.description }}</p>
 
-<form method="post" action="{% url 'submit_quiz' quiz.id %}">
-  {% csrf_token %}
-  {% for question in quiz.questions.all %}
-    <div class="card mb-3 p-2">
-      <p><strong>Q{{ forloop.counter }}:</strong> {{ question.question_text }}</p>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name="q{{ question.id }}" value="1" required>
-        <label class="form-check-label">A) {{ question.option1 }}</label>
-      </div>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name="q{{ question.id }}" value="2">
-        <label class="form-check-label">B) {{ question.option2 }}</label>
-      </div>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name="q{{ question.id }}" value="3">
-        <label class="form-check-label">C) {{ question.option3 }}</label>
-      </div>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name="q{{ question.id }}" value="4">
-        <label class="form-check-label">D) {{ question.option4 }}</label>
+  <div class="alert alert-info mb-3 text-center">
+    Time Remaining: <span id="timer"></span>
+  </div>
+
+  <form method="post" id="quizForm" action="{% url 'quiz:submit_quiz' attempt.id %}">
+    {% csrf_token %}
+    {% for question in questions %}
+    <div class="card mb-3">
+      <div class="card-body">
+        <p><strong>Q{{ forloop.counter }}:</strong> {{ question.question_text }}</p>
+        {% if question.image %}
+          <img src="{{ question.image.url }}" alt="Question Image" class="img-fluid mb-2">
+        {% endif %}
+
+        {% for i in "1234" %}
+          {% with opt_text=question|getattr:"option"|add:i opt_img=question|getattr:"option"|add:i|add:"_image" %}
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="q_{{ question.id }}" id="q{{ question.id }}{{ i }}" value="{{ i }}">
+            <label class="form-check-label" for="q{{ question.id }}{{ i }}">
+              {% if opt_text %}{{ opt_text }}{% endif %}
+              {% if opt_img %}
+                {% if opt_text %}<br>{% endif %}
+                <img src="{{ opt_img.url }}" class="img-fluid mt-1">
+              {% endif %}
+            </label>
+          </div>
+          {% endwith %}
+        {% endfor %}
+
       </div>
     </div>
-  {% endfor %}
+    {% endfor %}
 
-  <button type="submit" class="btn btn-primary">Submit Quiz</button>
-</form>
+    <button type="submit" class="btn btn-success btn-block">Submit Quiz</button>
+  </form>
+</div>
 
 <script>
-// Timer countdown
-let duration = {{ quiz.duration }} * 60; // in seconds
-let timer = document.getElementById('timer');
+let timeLeft = {{ duration_seconds }};
+const timerEl = document.getElementById('timer');
 
-let countdown = setInterval(function() {
-    let minutes = Math.floor(duration / 60);
-    let seconds = duration % 60;
-    timer.textContent = minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
-    duration--;
-    if(duration < 0){
-        clearInterval(countdown);
-        alert('Time is up! Submitting quiz.');
-        document.querySelector('form').submit();
+function updateTimer() {
+    let minutes = Math.floor(timeLeft / 60);
+    let seconds = timeLeft % 60;
+    timerEl.textContent = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+    if(timeLeft <= 0){
+        clearInterval(timerInterval);
+        alert("Time is up! The quiz will be submitted automatically.");
+        document.getElementById('quizForm').submit();
     }
-}, 1000);
+    timeLeft--;
+}
+
+updateTimer();
+let timerInterval = setInterval(updateTimer, 1000);
+
+document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+        alert("You left the quiz page. The quiz will be submitted.");
+        document.getElementById('quizForm').submit();
+    }
+});
 </script>
 {% endblock %}

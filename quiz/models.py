@@ -32,21 +32,26 @@ class Quiz(models.Model):
 
 class Question(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='questions')
-    image = models.ImageField(upload_to='question_images/', blank=True, null=True)  # new field
+    # Optional question image
+    image = models.ImageField(upload_to='question_images/', blank=True, null=True)
 
-    question_text = models.TextField()
+    # Optional question text
+    question_text = models.TextField(blank=True, null=True)
+
+    # Options (text optional, image optional)
     option1 = models.CharField(max_length=300, blank=True, null=True)
-    option1_image = models.ImageField(upload_to='option_images/', blank=True, null=True)  # Option 1 image
+    option1_image = models.ImageField(upload_to='option_images/', blank=True, null=True)
 
     option2 = models.CharField(max_length=300, blank=True, null=True)
-    option2_image = models.ImageField(upload_to='option_images/', blank=True, null=True)  # Option 2 image
+    option2_image = models.ImageField(upload_to='option_images/', blank=True, null=True)
 
     option3 = models.CharField(max_length=300, blank=True, null=True)
-    option3_image = models.ImageField(upload_to='option_images/', blank=True, null=True)  # Option 3 image
+    option3_image = models.ImageField(upload_to='option_images/', blank=True, null=True)
 
     option4 = models.CharField(max_length=300, blank=True, null=True)
-    option4_image = models.ImageField(upload_to='option_images/', blank=True, null=True)  # Option 4 image
-    CORRECT_CHOICES = [('1','1'),('2','2'),('3','3'),('4','4')]
+    option4_image = models.ImageField(upload_to='option_images/', blank=True, null=True)
+
+    CORRECT_CHOICES = [('1', '1'), ('2', '2'), ('3', '3'), ('4', '4')]
     correct_answer = models.CharField(max_length=1, choices=CORRECT_CHOICES)
     marks = models.PositiveIntegerField(default=1)
 

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5 text-center">
+    <h2>{{ quiz.title }} is not yet available</h2>
+    <p class="lead">This quiz is currently in draft mode or scheduled for a future date. Please check back later.</p>
+    <a href="{% url 'quiz:quiz_list' %}" class="btn btn-primary mt-3">Back to Quiz List</a>
+</div>
+{% endblock %}

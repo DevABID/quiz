@@ -4,6 +4,17 @@ from django.utils import timezone
 from .models import Quiz, Question, QuizAttempt, StudentAnswer
 
 @login_required
+def quiz_list(request):
+    quizzes = Quiz.objects.all()
+    # Auto-check publish for all quizzes
+    for quiz in quizzes:
+        quiz.check_auto_publish()
+    # Then filter published quizzes
+    quizzes = quizzes.filter(status='published').order_by('-publish_date')
+    return render(request, 'quiz/quiz_list.html', {'quizzes': quizzes})
+
+
+@login_required
 def submit_quiz(request, attempt_id):
     attempt = get_object_or_404(QuizAttempt, id=attempt_id, student=request.user)
     quiz = attempt.quiz

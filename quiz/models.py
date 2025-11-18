@@ -1,17 +1,34 @@
 from django.db import models
-from django.conf import settings
 from django.utils import timezone
+from django.conf import settings
 
 User = settings.AUTH_USER_MODEL
 
 class Quiz(models.Model):
+    STATUS_CHOICES = [('draft', 'Draft'), ('published', 'Published')]
+
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     duration = models.PositiveIntegerField(help_text='Duration in minutes')
     total_marks = models.PositiveIntegerField(default=0)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
+    publish_date = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
+
+    def check_auto_publish(self):
+        """Automatically publish if publish_date is reached"""
+        if self.status == 'draft' and self.publish_date and self.publish_date <= timezone.now():
+            self.status = 'published'
+            self.save(update_fields=['status'])
+
+    def is_published(self):
+        # Check and auto-update
+        self.check_auto_publish()
+        return self.status == 'published'
 
 class Question(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='questions')

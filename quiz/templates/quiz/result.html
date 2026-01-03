@@ -1,25 +1,20 @@
-{% extends "base.html" %}
-
+{% extends 'base.html' %}
 {% block content %}
-<h2>Quiz Result: {{ attempt.quiz.title }}</h2>
-<p>Total Score: {{ attempt.total_score }} / {{ attempt.quiz.total_marks }}</p>
-<p>Time Taken: {{ attempt.time_taken }} seconds</p>
-
-<h3>Question-wise Results</h3>
-{% for ans in answers %}
-<div class="card mb-2">
-  <div class="card-body">
-    <p><strong>Q{{ forloop.counter }}:</strong> {{ ans.question.question_text }}</p>
-    <p>Your Answer:
-        {% if ans.selected_option %}
-            Option {{ ans.selected_option }}
-        {% else %}
-            Not answered
-        {% endif %}
-    </p>
-    <p>Correct Answer: Option {{ ans.question.correct_answer }}</p>
-    <p>Marks Obtained: {{ ans.marks_obtained }}</p>
+<h3>Result: {{ attempt.quiz.title }}</h3>
+<p><strong>Score:</strong> {{ attempt.total_score }}</p>
+<p><strong>Time taken:</strong> {{ attempt.time_taken }} seconds</p>
+<hr>
+<h5>Answers</h5>
+{% for a in answers %}
+  <div class="card mb-2">
+    <div class="card-body">
+      <p><strong>Q{{ forloop.counter }}.</strong> {{ a.question.question_text }}</p>
+      <p>Your answer: {% if a.selected_option %}{{ a.selected_option }}{% else %}<em>No answer</em>{% endif %}</p>
+      <p>Correct answer: {{ a.question.correct_answer }}</p>
+      <p>Marks obtained: {{ a.marks_obtained }}</p>
+    </div>
   </div>
-</div>
 {% endfor %}
+
+<a class="btn btn-secondary" href="{% url 'quiz:quiz_list' %}">Back to quizzes</a>
 {% endblock %}
